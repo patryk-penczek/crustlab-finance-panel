@@ -1,10 +1,11 @@
 import { users } from '@/constants/users';
-import { DataTable } from '../ui/data-table';
 import { columns } from './columns';
+import { DataTable } from './data-table';
 
 export const Users = () => {
   return (
-    <div className="my-16">
+    <div>
+      <h1 className="mb-3 font-semibold text-xl">Users</h1>
       <DataTable columns={columns} data={users} />
     </div>
   );

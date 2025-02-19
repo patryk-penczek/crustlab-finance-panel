@@ -2,7 +2,7 @@
 
 import { User } from '@/types/user';
 import { ColumnDef } from '@tanstack/react-table';
-import { ActionsCell } from '../ui/actions';
+import { ActionsCell } from '../actions';
 
 export const columns: ColumnDef<User>[] = [
   {
@@ -27,7 +27,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <span>
         {row.original.balance.PLN}{' '}
-        <span className="text-muted-foreground">zł</span>
+        <span className="text-muted-foreground text-xs">PLN</span>
       </span>
     ),
   },
@@ -38,7 +38,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <span>
         {row.original.balance.EUR}{' '}
-        <span className="text-muted-foreground">€</span>
+        <span className="text-muted-foreground text-xs">EUR</span>
       </span>
     ),
   },
@@ -49,7 +49,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row }) => (
       <span>
         {row.original.balance.USD}{' '}
-        <span className="text-muted-foreground">$</span>
+        <span className="text-muted-foreground text-xs">USD</span>
       </span>
     ),
   },

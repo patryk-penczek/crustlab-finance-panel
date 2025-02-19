@@ -57,8 +57,14 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      margin: {
+        0.75: '0.1875rem',
+      },
       maxWidth: {
         400: '1600px',
+      },
+      screens: {
+        xs: '480px',
       },
     },
   },

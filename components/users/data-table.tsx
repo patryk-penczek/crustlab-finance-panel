@@ -17,7 +17,7 @@ import {
 } from '@tanstack/react-table';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { Input } from './input';
+import { Input } from '../ui/input';
 
 type DataTableProps<TData extends { id: number }, TValue> = {
   columns: ColumnDef<TData, TValue>[];
@@ -58,12 +58,13 @@ export function DataTable<TData extends { id: number }, TValue>({
   return (
     <div className="space-y-4">
       <Input
+        id="search"
         placeholder="Search by name or id..."
         value={globalFilter}
         onChange={handleSearchChange}
         className="rounded-md border"
       />
-      <div className="rounded-md border">
+      <div className="rounded-md border bg-white">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

@@ -1,4 +1,6 @@
-import { Container } from '@/components/Container';
+import { Container } from '@/components/container';
+import { NavBar } from '@/components/navbar';
+import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
@@ -18,8 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Container>{children}</Container>
+      <body className={cn(inter.className, 'bg-accent')}>
+        <NavBar />
+        <Container className="my-20">{children}</Container>
       </body>
     </html>
   );
