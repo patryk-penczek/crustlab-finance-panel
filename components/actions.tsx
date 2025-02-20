@@ -51,16 +51,16 @@ export const ActionsCell = ({ user }: { user: User }) => {
             Operations
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <SendDialog action />
+            <SendDialog action user={user} />
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <DepositDialog action />
+            <DepositDialog action user={user} />
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <WithdrawDialog action />
+            <WithdrawDialog action user={user} />
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <ExchangeDialog action />
+            <ExchangeDialog action user={user} />
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -21,7 +21,7 @@ export const users: User[] = [
         },
       },
       {
-        id: 1,
+        id: 2,
         type: OperationType.DEPOSIT,
         amount: 5000,
         currency: Currency.PLN,
@@ -31,7 +31,7 @@ export const users: User[] = [
         },
       },
       {
-        id: 1,
+        id: 3,
         type: OperationType.WITHDRAW,
         amount: 500,
         currency: Currency.PLN,
@@ -41,7 +41,7 @@ export const users: User[] = [
         },
       },
       {
-        id: 2,
+        id: 4,
         type: OperationType.EXCHANGE,
         amount: 2000,
         currency: Currency.PLN,

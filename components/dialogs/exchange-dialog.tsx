@@ -10,8 +10,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -22,13 +29,66 @@ import {
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
 import { cn } from '@/lib/utils';
+import { Currency } from '@/types/currency';
+import { User } from '@/types/user';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { CoinsIcon } from 'lucide-react';
+import { Controller, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 type Props = {
   action?: boolean;
+  user: User;
 };
 
-export function ExchangeDialog({ action }: Props) {
+export function ExchangeDialog({ action, user }: Props) {
+  const schema = yup.object().shape({
+    amount: yup
+      .number()
+      .transform((value, originalValue) => (originalValue === '' ? 0 : value))
+      .positive('Amount must be greater than 0')
+      .required('Please enter an amount')
+      .test('sufficientBalance', '', function (value) {
+        const fromCurrency = this.parent.fromCurrency as Currency;
+        const userBalance = user.balance[fromCurrency] || 0;
+        return (
+          value <= userBalance ||
+          this.createError({
+            message: `Insufficient funds. Your ${fromCurrency} balance is ${userBalance}.`,
+          })
+        );
+      }),
+    fromCurrency: yup
+      .mixed<Currency>()
+      .oneOf(Object.values(Currency), 'Please select a valid currency')
+      .required('Please select a currency'),
+    toCurrency: yup
+      .mixed<Currency>()
+      .oneOf(Object.values(Currency), 'Please select a valid currency')
+      .required('Please select a currency')
+      .test(
+        'differentCurrency',
+        'Currencies must be different',
+        function (value) {
+          return value !== this.parent.fromCurrency;
+        }
+      ),
+  });
+
+  const form = useForm<yup.InferType<typeof schema>>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      amount: 0,
+      fromCurrency: Currency.PLN,
+      toCurrency: Currency.USD,
+    },
+  });
+
+  const onSubmit = (data: yup.InferType<typeof schema>) => {
+    console.log(data);
+    form.reset();
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -50,53 +110,110 @@ export function ExchangeDialog({ action }: Props) {
             Exchange currency to another currency.
           </DialogDescription>
         </DialogHeader>
-        <div className="space-y-6 pt-4 pb-6">
-          <div className="flex flex-col gap-2 w-full">
-            <Label htmlFor="amount">Amount</Label>
-            <Input
-              id="amount"
-              placeholder="Enter amount"
-              className="col-span-3"
-            />
-          </div>
-          <div className="flex flex-col gap-2 w-full">
-            <Label htmlFor="from_currency">From currency</Label>
-            <Select>
-              <SelectTrigger id="from_currency" className="w-full md:w-[180px]">
-                <SelectValue placeholder="Select currency" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {currencies.map(({ code }, index) => (
-                    <SelectItem key={index} value={code}>
-                      <span>{code}</span>
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="flex flex-col gap-2 w-full">
-            <Label htmlFor="to_currency">To currency</Label>
-            <Select>
-              <SelectTrigger id="to_currency" className="w-full md:w-[180px]">
-                <SelectValue placeholder="Select currency" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  {currencies.map(({ code }, index) => (
-                    <SelectItem key={index} value={code}>
-                      <span>{code}</span>
-                    </SelectItem>
-                  ))}
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <DialogFooter>
-          <Button type="submit">Save changes</Button>
-        </DialogFooter>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="space-y-6 pt-4 pb-6">
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="amount">Amount</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="amount"
+                        type="number"
+                        placeholder="Enter amount"
+                        {...field}
+                        value={field.value === 0 ? '' : field.value}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="fromCurrency"
+                render={() => (
+                  <FormItem>
+                    <FormLabel htmlFor="fromCurrency">From currency</FormLabel>
+                    <FormControl>
+                      <Controller
+                        control={form.control}
+                        name="fromCurrency"
+                        render={({ field: controllerField }) => (
+                          <Select
+                            value={controllerField.value}
+                            onValueChange={controllerField.onChange}
+                          >
+                            <SelectTrigger
+                              id="fromCurrency"
+                              className="w-full md:w-[180px]"
+                            >
+                              <SelectValue placeholder="Select currency" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {currencies.map(({ code }, index) => (
+                                  <SelectItem key={index} value={code}>
+                                    <span>{code}</span>
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="toCurrency"
+                render={() => (
+                  <FormItem>
+                    <FormLabel htmlFor="toCurrency">To currency</FormLabel>
+                    <FormControl>
+                      <Controller
+                        control={form.control}
+                        name="toCurrency"
+                        render={({ field: controllerField }) => (
+                          <Select
+                            value={controllerField.value}
+                            onValueChange={controllerField.onChange}
+                          >
+                            <SelectTrigger
+                              id="toCurrency"
+                              className="w-full md:w-[180px]"
+                            >
+                              <SelectValue placeholder="Select currency" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                {currencies.map(({ code }, index) => (
+                                  <SelectItem key={index} value={code}>
+                                    <span>{code}</span>
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <DialogFooter>
+              <Button type="submit">Exchange currency</Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

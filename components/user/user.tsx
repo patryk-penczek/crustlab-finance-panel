@@ -19,10 +19,10 @@ export const User = ({ user }: Props) => {
         <UserHeader user={user} />
         <UserBalance user={user} />
         <div className="flex flex-col py-6 border-t">
-          <SendDialog />
-          <DepositDialog />
-          <WithdrawDialog />
-          <ExchangeDialog />
+          <SendDialog user={user} />
+          <DepositDialog user={user} />
+          <WithdrawDialog user={user} />
+          <ExchangeDialog user={user} />
         </div>
       </div>
       <div className="w-full">
