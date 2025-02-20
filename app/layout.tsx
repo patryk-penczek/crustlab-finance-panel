@@ -1,5 +1,6 @@
 import { Container } from '@/components/container';
 import { NavBar } from '@/components/navbar';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body className={cn(inter.className, 'bg-accent')}>
         <NavBar />
         <Container className="my-20">{children}</Container>
+        <Toaster />
       </body>
     </html>
   );

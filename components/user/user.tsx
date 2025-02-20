@@ -1,4 +1,7 @@
+'use client';
+
 import { User as UserType } from '@/types/user';
+import { useUsersFromStorage } from '../../hooks/get-users-from-storage';
 import { DepositDialog } from '../dialogs/deposit-dialog';
 import { ExchangeDialog } from '../dialogs/exchange-dialog';
 import { SendDialog } from '../dialogs/send-dialog';
@@ -8,11 +11,14 @@ import { DataTable } from './data-table';
 import { UserBalance } from './user-balance';
 import { UserHeader } from './user-header';
 
-type Props = {
-  user: UserType;
-};
+export function User({ user: defaultUser }: { user: UserType }) {
+  const { getUserById } = useUsersFromStorage();
+  const user = getUserById(defaultUser.id);
 
-export const User = ({ user }: Props) => {
+  if (!user) {
+    return <p>Loading user...</p>;
+  }
+
   return (
     <div className="flex flex-col xl:flex-row gap-8">
       <div className="bg-white rounded-md border min-w-72">
@@ -31,4 +37,4 @@ export const User = ({ user }: Props) => {
       </div>
     </div>
   );
-};
+}

@@ -28,11 +28,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
+import { useDepositOperation } from '@/hooks/use-deposit-operation';
+import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Currency } from '@/types/currency';
 import { User } from '@/types/user';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { PiggyBankIcon } from 'lucide-react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -53,7 +56,10 @@ const schema = yup.object().shape({
     .required('Please select a currency'),
 });
 
-export function DepositDialog({ action }: Props) {
+export function DepositDialog({ user, action }: Props) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { deposit } = useDepositOperation({ user });
+
   const form = useForm<yup.InferType<typeof schema>>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -63,12 +69,17 @@ export function DepositDialog({ action }: Props) {
   });
 
   const onSubmit = (data: yup.InferType<typeof schema>) => {
-    console.log(data);
+    deposit(data.amount, data.currency);
+    toast({
+      title: 'Deposit successful',
+      description: `Deposited ${data.amount} ${data.currency} to ${user.firstName} ${user.lastName}`,
+    });
     form.reset();
+    setDialogOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"

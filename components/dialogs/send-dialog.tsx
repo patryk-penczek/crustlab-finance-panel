@@ -42,6 +42,8 @@ import {
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
 import { users } from '@/constants/users';
+import { useSendOperation } from '@/hooks/use-send-operation';
+import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Currency } from '@/types/currency';
 import { User } from '@/types/user';
@@ -57,7 +59,9 @@ type Props = {
 };
 
 export function SendDialog({ action, user }: Props) {
-  const [open, setOpen] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const { send } = useSendOperation({ user });
 
   const schema = yup.object().shape({
     amount: yup
@@ -95,12 +99,18 @@ export function SendDialog({ action, user }: Props) {
   });
 
   const onSubmit = (data: yup.InferType<typeof schema>) => {
-    console.log(data);
+    const recipient = users.find((u) => u.id.toString() === data.recipientId);
+    send(data.amount, data.currency, data.recipientId);
+    toast({
+      title: 'Sending money successful',
+      description: `Sent ${data.amount} ${data.currency} from ${user.firstName} ${user.lastName} to ${recipient?.firstName} ${recipient?.lastName}`,
+    });
     form.reset();
+    setDialogOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
@@ -128,12 +138,12 @@ export function SendDialog({ action, user }: Props) {
                   <FormItem>
                     <FormLabel htmlFor="recipientId">Recipient</FormLabel>
                     <FormControl>
-                      <Popover open={open} onOpenChange={setOpen}>
+                      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                         <PopoverTrigger id="recipientId" asChild>
                           <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={open}
+                            aria-expanded={popoverOpen}
                             className="w-full justify-between font-normal"
                           >
                             {field.value
@@ -167,7 +177,7 @@ export function SendDialog({ action, user }: Props) {
                                           'recipientId',
                                           recipient.id.toString()
                                         );
-                                        setOpen(false);
+                                        setPopoverOpen(false);
                                       }}
                                     >
                                       <CheckIcon

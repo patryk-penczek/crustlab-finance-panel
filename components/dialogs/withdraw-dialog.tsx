@@ -28,11 +28,14 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
+import { toast } from '@/hooks/use-toast';
+import { useWithdrawOperation } from '@/hooks/use-withdraw-operation';
 import { cn } from '@/lib/utils';
 import { Currency } from '@/types/currency';
 import { User } from '@/types/user';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Wallet2Icon } from 'lucide-react';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 
@@ -42,6 +45,9 @@ type Props = {
 };
 
 export function WithdrawDialog({ action, user }: Props) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { withdraw } = useWithdrawOperation({ user });
+
   const schema = yup.object().shape({
     amount: yup
       .number()
@@ -73,12 +79,17 @@ export function WithdrawDialog({ action, user }: Props) {
   });
 
   const onSubmit = (data: yup.InferType<typeof schema>) => {
-    console.log(data);
+    withdraw(data.amount, data.currency);
+    toast({
+      title: 'Withdraw successful',
+      description: `Withdrew ${data.amount} ${data.currency} from ${user.firstName} ${user.lastName}`,
+    });
     form.reset();
+    setDialogOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogTrigger asChild>
         <Button
           variant="ghost"
