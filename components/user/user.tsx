@@ -10,13 +10,14 @@ import { columns } from './columns';
 import { DataTable } from './data-table';
 import { UserBalance } from './user-balance';
 import { UserHeader } from './user-header';
+import { UserSkeleton } from './user-skeleton';
 
 export function User({ user: defaultUser }: { user: UserType }) {
   const { getUserById } = useUsersFromStorage();
   const user = getUserById(defaultUser.id);
 
   if (!user) {
-    return <p>Loading user...</p>;
+    return <UserSkeleton />;
   }
 
   return (
@@ -31,8 +32,8 @@ export function User({ user: defaultUser }: { user: UserType }) {
           <ExchangeDialog user={user} />
         </div>
       </div>
-      <div className="w-full">
-        <h3 className="mb-3 font-semibold text-xl">Operations</h3>
+      <div className="space-y-4 w-full">
+        <h3 className="font-semibold text-xl">Operations</h3>
         <DataTable columns={columns} data={user.operations} />
       </div>
     </div>

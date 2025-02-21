@@ -1,28 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CrustLab Finance Panel
 
-## Getting Started
+An admin panel application for managing user accounts and financial transactions. Browse the user list, perform user financial operations, and track operations history. Easily deposit, withdraw, transfer funds and exchange currencies!
 
-First, run the development server:
+## 🚀 Live Preview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
+The project is deployed on Vercel:
+[crustlab-finance-panel.vercel.app](https://crustlab-finance-panel.vercel.app)
+
+## 📥 Installation
+
+Clone the repository:
+
+```sh
+git clone https://github.com/patryk-penczek/crustlab-finance-panel.git
+```
+
+```sh
+cd crustlab-finance-panel
+```
+
+Install dependencies using Bun:
+
+```sh
+bun install
+```
+
+```sh
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📌 Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Users page `/users` – Displays a list of users with basic account details.
 
-## Learn More
+- User ID
+- Full name
+- Available balance in PLN, EUR, and USD
+- Search users by name or ID
 
-To learn more about Next.js, take a look at the following resources:
+User details page `/users/[id]` – Shows detailed account balance and transaction history.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- View detailed balance in different currencies
+- See full transaction history
+- Perform financial operations
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Financial operations:
+
+- Deposit funds – Add funds to the account in selected currency.
+- Withdraw funds – Withdraw money, with a balance check.
+- Transfer funds – Send money to another user with a transaction fee.
+- Currency exchange – Exchange money between PLN, EUR, and USD at a fixed rate.
+
+## 🛠️ Technologies Used
+
+- Next.js (App Router) – React framework for server-side rendering
+- TypeScript – Strict typing for better maintainability
+- Tailwind CSS – Utility-first CSS framework
+- Shadcn/ui - Pre-built UI components for faster development
+- Lucide-react – Icon library for UI elements
+- LocalStorage – Storing user balances and transaction history
