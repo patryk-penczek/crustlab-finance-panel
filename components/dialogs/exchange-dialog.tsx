@@ -13,6 +13,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,7 +29,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
-import { useExchangeOperation } from '@/hooks/use-exchange-operation';
+import { operationFees } from '@/constants/fees';
+import {
+  getExchangeRate,
+  useExchangeOperation,
+} from '@/hooks/use-exchange-operation';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { Currency } from '@/types/currency';
@@ -94,7 +99,11 @@ export function ExchangeDialog({ action, user }: Props) {
     exchange(data.amount, data.fromCurrency, data.toCurrency);
     toast({
       title: 'Exchange successful',
-      description: `Exchanged ${data.amount} ${data.fromCurrency} to ${data.toCurrency}`,
+      description: `Exchanged ${data.amount} ${data.fromCurrency} to 
+      ${(
+        getExchangeRate(data.fromCurrency, data.toCurrency) *
+        (data.amount - data.amount * operationFees.exchange)
+      ).toFixed(2)} ${data.toCurrency}`,
     });
     form.reset();
     setDialogOpen(false);
@@ -139,6 +148,17 @@ export function ExchangeDialog({ action, user }: Props) {
                         value={field.value === 0 ? '' : field.value}
                       />
                     </FormControl>
+                    {field.value > 0 && (
+                      <FormDescription>
+                        {`${field.value} ${form.watch('fromCurrency')} → ${(
+                          getExchangeRate(
+                            form.watch('fromCurrency'),
+                            form.watch('toCurrency')
+                          ) *
+                          (field.value - field.value * operationFees.exchange)
+                        ).toFixed(2)} ${form.watch('toCurrency')} (after fees)`}
+                      </FormDescription>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

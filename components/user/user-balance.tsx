@@ -15,7 +15,9 @@ export const UserBalance = ({ user }: Props) => {
         {currencies.map(({ code, flag, alt }, index) => (
           <li key={index} className="flex items-center">
             <Image src={flag} alt={alt} width={20} height={20} />
-            <p className="ml-1 mr-0.75">{user.balance[code as Currency]}</p>
+            <p className="ml-1 mr-0.75">
+              {user.balance[code as Currency].toFixed(2)}
+            </p>
             <span className="text-muted-foreground text-xs mt-0.75">
               {code}
             </span>

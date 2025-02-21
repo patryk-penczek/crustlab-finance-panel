@@ -21,7 +21,7 @@ export function User({ user: defaultUser }: { user: UserType }) {
 
   return (
     <div className="flex flex-col xl:flex-row gap-8">
-      <div className="bg-white rounded-md border min-w-72">
+      <div className="bg-white rounded-md border min-w-72 h-[474px]">
         <UserHeader user={user} />
         <UserBalance user={user} />
         <div className="flex flex-col py-6 border-t">

@@ -13,6 +13,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,6 +29,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
+import { operationFees } from '@/constants/fees';
 import { useDepositOperation } from '@/hooks/use-deposit-operation';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -72,7 +74,9 @@ export function DepositDialog({ user, action }: Props) {
     deposit(data.amount, data.currency);
     toast({
       title: 'Deposit successful',
-      description: `Deposited ${data.amount} ${data.currency} to ${user.firstName} ${user.lastName}`,
+      description: `Deposited ${data.amount.toFixed(2)} ${data.currency} to ${
+        user.firstName
+      } ${user.lastName}`,
     });
     form.reset();
     setDialogOpen(false);
@@ -115,6 +119,14 @@ export function DepositDialog({ user, action }: Props) {
                         value={field.value === 0 ? '' : field.value}
                       />
                     </FormControl>
+                    {field.value > 0 && (
+                      <FormDescription>
+                        {`You will receive ${(
+                          field.value -
+                          field.value * operationFees.deposit
+                        ).toFixed(2)} ${form.watch('currency')} after fees.`}
+                      </FormDescription>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

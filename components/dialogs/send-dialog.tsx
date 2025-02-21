@@ -21,6 +21,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -41,6 +42,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { currencies } from '@/constants/currencies';
+import { operationFees } from '@/constants/fees';
 import { users } from '@/constants/users';
 import { useSendOperation } from '@/hooks/use-send-operation';
 import { toast } from '@/hooks/use-toast';
@@ -72,10 +74,13 @@ export function SendDialog({ action, user }: Props) {
       .test('sufficientBalance', '', function (value) {
         const currency = this.parent.currency as Currency;
         const userBalance = user.balance[currency] || 0;
+        const valueWithFee = value + value * operationFees.transfer;
         return (
-          value <= userBalance ||
+          valueWithFee <= userBalance ||
           this.createError({
-            message: `Insufficient funds. Your ${currency} balance is ${userBalance}.`,
+            message: `Insufficient funds to make a transfer. Required amount with fee: ${valueWithFee.toFixed(
+              2
+            )} ${currency}`,
           })
         );
       }),
@@ -217,6 +222,16 @@ export function SendDialog({ action, user }: Props) {
                         value={field.value === 0 ? '' : field.value}
                       />
                     </FormControl>
+                    {field.value > 0 && (
+                      <FormDescription>
+                        {`Total cost: ${(
+                          Number(field.value) +
+                          Number(field.value) * operationFees.transfer
+                        ).toFixed(2)} ${form.watch(
+                          'currency'
+                        )} (including fees).`}
+                      </FormDescription>
+                    )}
                     <FormMessage />
                   </FormItem>
                 )}

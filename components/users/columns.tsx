@@ -26,7 +26,7 @@ export const columns: ColumnDef<User>[] = [
     enableGlobalFilter: false,
     cell: ({ row }) => (
       <span>
-        {row.original.balance.PLN}{' '}
+        {row.original.balance.PLN.toFixed(2)}{' '}
         <span className="text-muted-foreground text-xs">PLN</span>
       </span>
     ),
@@ -37,7 +37,7 @@ export const columns: ColumnDef<User>[] = [
     enableGlobalFilter: false,
     cell: ({ row }) => (
       <span>
-        {row.original.balance.EUR}{' '}
+        {row.original.balance.EUR.toFixed(2)}{' '}
         <span className="text-muted-foreground text-xs">EUR</span>
       </span>
     ),
@@ -48,7 +48,7 @@ export const columns: ColumnDef<User>[] = [
     enableGlobalFilter: false,
     cell: ({ row }) => (
       <span>
-        {row.original.balance.USD}{' '}
+        {row.original.balance.USD.toFixed(2)}{' '}
         <span className="text-muted-foreground text-xs">USD</span>
       </span>
     ),
